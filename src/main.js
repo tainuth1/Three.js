@@ -19,14 +19,16 @@ const renderer = new THREE.WebGLRenderer({
 renderer.setPixelRatio(window.devicePixelRatio);
 renderer.setSize(window.innerWidth, window.innerHeight);
 
-camera.position.z = 30;
+camera.position.z = 50;
 
 renderer.render(scene, camera);
 
-const geometry = new THREE.TorusGeometry(10, 3, 16, 100);
+const geometry = new THREE.TorusGeometry(8, 3, 160, 100);
 const meterial = new THREE.MeshStandardMaterial({
   color: 0x00ff00,
   // wireframe: true,
+  roughness: 0,
+  metalness: 0.5,
 });
 const torus = new THREE.Mesh(geometry, meterial);
 
@@ -36,11 +38,18 @@ const pointLight = new THREE.PointLight(0xffffff, 900);
 pointLight.position.set(0, 0, 0);
 scene.add(pointLight);
 
+const pointLight2 = new THREE.PointLight(0xffffff, 900);
+pointLight2.position.set(0, 20, 20);
+scene.add(pointLight2);
+
 const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
-scene.add(pointLight, ambientLight);
+scene.add(pointLight, pointLight2, ambientLight);
 
 const lightHelper = new THREE.PointLightHelper(pointLight);
 scene.add(lightHelper);
+
+const lightHelper2 = new THREE.PointLightHelper(pointLight2);
+scene.add(lightHelper2);
 
 // const cameraHelper = new THREE.CameraHelper(pointLight.shadow.camera);
 // scene.add(cameraHelper);
@@ -68,7 +77,7 @@ function addStars() {
   star.position.set(x, y, z);
   scene.add(star);
 }
-Array(300).fill().forEach(addStars);
+// Array(300).fill().forEach(addStars);
 
 const spaceTexture = new THREE.TextureLoader().load("space.jpg");
 scene.background = spaceTexture;
@@ -102,7 +111,7 @@ function scrollMoveCamera() {
 document.body.onscroll = scrollMoveCamera;
 
 const testBoxGeo = new THREE.BoxGeometry(2, 2, 2);
-const testBoxMat = new THREE.MeshStandardMaterial({ color: 0x00ff00 });
+const testBoxMat = new THREE.MeshPhongMaterial({ color: 0xffff00 });
 const testBox = new THREE.Mesh(testBoxGeo, testBoxMat);
 testBox.scale.set(1, 1, 1);
 testBox.position.z = -20;
@@ -147,6 +156,18 @@ renderer.domElement.addEventListener("pointermove", onPointerMove);
 renderer.domElement.addEventListener("pointerleave", onPointerLeave);
 // ====> Testing Box
 
+const torusKnotGeometry = new THREE.TorusKnotGeometry(5, 1.5, 500, 100);
+const torusKnotMeterial = new THREE.MeshPhongMaterial({
+  color: 0x049ef4,
+  specular: 0xffffff,
+  reflectivity: 1,
+  shininess: 100,
+  visible: true,
+});
+const torusKnot = new THREE.Mesh(torusKnotGeometry, torusKnotMeterial);
+torusKnot.position.set(0, 0, 20);
+scene.add(torusKnot);
+
 function animate() {
   // Testing Box
   // Smoothly interpolate testBox scale toward target
@@ -154,9 +175,12 @@ function animate() {
   testBox.scale.set(s, s, s);
 
   renderer.render(scene, camera);
-  // torus.rotation.x += 0.009;
+  torus.rotation.x += 0.009;
   torus.rotation.y += 0.009;
   moon.rotation.y += 0.005;
   moon2.rotation.y += 0.01;
+
+  torusKnot.rotation.x += 0.009;
+  torusKnot.rotation.y += 0.009;
 }
 renderer.setAnimationLoop(animate);
