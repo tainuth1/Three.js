@@ -9,12 +9,15 @@ const camera = new THREE.PerspectiveCamera(
   0.1,
   1000
 );
+camera.lookAt(0, 0, 0);
+camera.position.set(0, 10, 20);
+
 const renderer = new THREE.WebGLRenderer({
   canvas: document.getElementById("bg"),
 });
-camera.position.set(0, 5, 10);
 renderer.render(scene, camera);
 renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 renderer.setPixelRatio(window.devicePixelRatio);
 renderer.setSize(window.innerWidth, window.innerHeight);
 
@@ -52,16 +55,31 @@ const material = new THREE.MeshPhongMaterial({
 });
 const cube = new THREE.Mesh(geometry, material);
 cube.position.set(0, 2, 0);
+cube.castShadow = true;
 scene.add(cube);
 
-const pointLight = new THREE.PointLight(0xffffff, 1000);
-pointLight.position.set(10, 10, 10);
-scene.add(pointLight);
+// Point Light
+// const pointLight = new THREE.PointLight(0xffffff, 2);
+// pointLight.position.set(10, 10, 10);
+// scene.add(pointLight);
 
-const ambientLight = new THREE.AmbientLight(pointLight);
+// const ambientLight = new THREE.AmbientLight(pointLight);
+// scene.add(ambientLight);
+
+// const lightHelper = new THREE.PointLightHelper(pointLight);
+// scene.add(lightHelper);
+
+// Directional Light
+const directionalLight = new THREE.DirectionalLight(0xffffff, 3);
+directionalLight.position.set(10, 10, 10);
+directionalLight.castShadow = true;
+
+scene.add(directionalLight);
+
+const ambientLight = new THREE.AmbientLight(directionalLight);
 scene.add(ambientLight);
 
-const lightHelper = new THREE.PointLightHelper(pointLight);
+const lightHelper = new THREE.DirectionalLightHelper(directionalLight);
 scene.add(lightHelper);
 
 const metalTexture = new THREE.TextureLoader().load("iron/metal.jpg");
@@ -82,9 +100,26 @@ const sphereMaterial = new THREE.MeshPhongMaterial({
 });
 const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
 sphere.position.set(-5, 2, 0);
+sphere.castShadow = true;
 scene.add(sphere);
+
+const torusKnotGeometry = new THREE.TorusKnotGeometry(3, 1, 500, 100);
+const torusKnotMeterial = new THREE.MeshPhongMaterial({
+  color: 0x00ff00,
+  specular: 0xffffff,
+  shininess: 100,
+  reflectivity: 1,
+});
+const torusKnot = new THREE.Mesh(torusKnotGeometry, torusKnotMeterial);
+torusKnot.position.set(0, 3, -7);
+torusKnot.scale.set(0.5, 0.5, 0.5);
+torusKnot.castShadow = true;
+scene.add(torusKnot);
 
 function animate() {
   renderer.render(scene, camera);
+  torusKnot.rotation.x += 0.01
+  torusKnot.rotation.y += 0.01
+  torusKnot.rotation.z += 0.01
 }
 renderer.setAnimationLoop(animate);
