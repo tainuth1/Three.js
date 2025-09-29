@@ -17,3 +17,12 @@ main {
   z-index: 1;
   height: 300vh;
 }
+
+.btn {
+  font-size: 20px;
+  margin: 20px;
+  cursor: pointer;
+}
+.btn:active {
+  background-color: red;
+}

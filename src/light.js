@@ -2,7 +2,10 @@ import "./style.css";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/Addons.js";
 
+const sceneTexture = new THREE.TextureLoader().load("city-night.jpg");
+
 const scene = new THREE.Scene();
+scene.background = sceneTexture;
 const camera = new THREE.PerspectiveCamera(
   75,
   window.innerWidth / window.innerHeight,
@@ -45,13 +48,13 @@ ground.receiveShadow = true;
 scene.add(ground);
 
 // const geometry = new THREE.SphereGeometry(2, 200, 100, 100);
-const geometry = new THREE.BoxGeometry(3, 3, 3, 20, 20, 20);
+const geometry = new THREE.BoxGeometry(3, 3, 3, 5, 5, 5);
 const material = new THREE.MeshPhongMaterial({
   color: 0x049ef4,
   specular: 0xffffff,
   reflectivity: 1,
   shininess: 100,
-  //   wireframe: true,
+  wireframe: true,
 });
 const cube = new THREE.Mesh(geometry, material);
 cube.position.set(0, 2, 0);
@@ -103,7 +106,7 @@ sphere.position.set(-5, 2, 0);
 sphere.castShadow = true;
 scene.add(sphere);
 
-const torusKnotGeometry = new THREE.TorusKnotGeometry(3, 1, 500, 100);
+const torusKnotGeometry = new THREE.TorusKnotGeometry(3, 1, 500, 100, 2, 5);
 const torusKnotMeterial = new THREE.MeshPhongMaterial({
   color: 0x00ff00,
   specular: 0xffffff,
@@ -116,10 +119,29 @@ torusKnot.scale.set(0.5, 0.5, 0.5);
 torusKnot.castShadow = true;
 scene.add(torusKnot);
 
+// Testing new thing in the documents:
+console.log(scene.children);
+// scene.background
+
+let isAnimating = false;
+const button = document.querySelector(".btn");
+button.addEventListener("click", () => {
+  isAnimating = !isAnimating;
+});
+
 function animate() {
+  if (!isAnimating) {
+    // requestAnimationFrame(animate);
+    torusKnot.rotation.x += 0.01;
+    torusKnot.rotation.y += 0.01;
+    torusKnot.rotation.z += 0.01;
+  }
   renderer.render(scene, camera);
-  torusKnot.rotation.x += 0.01
-  torusKnot.rotation.y += 0.01
-  torusKnot.rotation.z += 0.01
+
+  const time = Date.now() * 0.001;
+  const scale = 1 + Math.sin(time * 2) * 0.2; // Pulse between 0.8 and 1.2
+
+  cube.scale.set(scale, scale, scale);
 }
 renderer.setAnimationLoop(animate);
+// animate();
