@@ -66,11 +66,11 @@ box3.position.set(0, 6, 0);
 scene.add(box3);
 
 const torusGeometry = new THREE.TorusGeometry(3, 1, 100, 100);
-const torusMaterial = new THREE.MeshPhongMaterial({
+const torusMaterial = new THREE.MeshStandardMaterial({
   color: 0x00ff00,
-  specular: 0xffffff,
-  shininess: 100,
-  reflectivity: 1,
+  emissive: 0x000000,
+  roughness: 0,
+  metalness: 0.1,
 });
 const torus = new THREE.Mesh(torusGeometry, torusMaterial);
 torus.position.set(-8, 0, -5);
@@ -95,39 +95,39 @@ renderer.setAnimationLoop(animate);
 
 // Raycasting
 
-// const raycaster = new THREE.Raycaster();
-// document.addEventListener("mousedown", (e) => {
-//   const coords = new THREE.Vector2(
-//     (e.clientX / renderer.domElement.clientWidth) * 2 - 1,
-//     -((e.clientY / renderer.domElement.clientHeight) * 2 - 1)
-//   );
-//   raycaster.setFromCamera(coords, camera);
+const raycaster = new THREE.Raycaster();
+document.addEventListener("mousedown", (e) => {
+  const coords = new THREE.Vector2(
+    (e.clientX / renderer.domElement.clientWidth) * 2 - 1,
+    -((e.clientY / renderer.domElement.clientHeight) * 2 - 1)
+  );
+  raycaster.setFromCamera(coords, camera);
 
-//   const intersection = raycaster.intersectObjects(scene.children, true);
-//   if (intersection.length > 0) {
-//     const selectedObject = intersection[0].object;
-//     if (ground.uuid != selectedObject.uuid) {
-//       selectedObject.material.color = new THREE.Color(
-//         Math.random(),
-//         Math.random(),
-//         Math.random()
-//       );
-//       selectedObject.rotation.y += 0.5;
-//     }
-//   } else {
-//     alert("You aren't click on anything, maybe you just click on the space.");
-//   }
+  const intersection = raycaster.intersectObjects(scene.children, true);
+  if (intersection.length > 0) {
+    const selectedObject = intersection[0].object;
+    if (ground.uuid != selectedObject.uuid) {
+      selectedObject.material.color = new THREE.Color(
+        Math.random(),
+        Math.random(),
+        Math.random()
+      );
+      selectedObject.rotation.y += 0.5;
+    }
+  } else {
+    alert("You aren't click on anything, maybe you just click on the space.");
+  }
 
-//   // const intersection = raycaster.intersectObjects([box1, box2, box3], true);
-//   // if (intersection.length > 0) {
-//   //   const selectedObject = intersection[0].object;
-//   //   selectedObject.material.color = new THREE.Color(
-//   //     Math.random(),
-//   //     Math.random(),
-//   //     Math.random()
-//   //   );
-//   //   selectedObject.rotation.y += 0.5;
-//   // } else {
-//   //   alert("You aren't click on anything, maybe you just click on the space.");
-//   // }
-// });
+  // const intersection = raycaster.intersectObjects([box1, box2, box3], true);
+  // if (intersection.length > 0) {
+  //   const selectedObject = intersection[0].object;
+  //   selectedObject.material.color = new THREE.Color(
+  //     Math.random(),
+  //     Math.random(),
+  //     Math.random()
+  //   );
+  //   selectedObject.rotation.y += 0.5;
+  // } else {
+  //   alert("You aren't click on anything, maybe you just click on the space.");
+  // }
+});
